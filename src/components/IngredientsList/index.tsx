@@ -1,7 +1,8 @@
 import { styles } from "./styles";
-import { ScrollView } from "react-native";
+import { Alert, ScrollView } from "react-native";
 import { Ingredient } from "../Ingredient";
 import { useState } from "react";
+import { Selected } from "../Selected";
 
 export function IngredientsList(){
     const [ selected, setSelected ] = useState<string[]>([])
@@ -12,25 +13,42 @@ export function IngredientsList(){
         }
 
         setSelected((state) => [ ...state, value ])
+        console.log(selected)
         
     }
 
-    return(
-        <ScrollView 
-            showsHorizontalScrollIndicator={false}
-           contentContainerStyle={styles.container}
-        >
-        {Array.from({ length: 100 }).map
-        (( item, index ) => (
-            <Ingredient 
-               key={index} 
-               name="Maça"
-               image=""
-               selected={selected.includes(String(index))}
-               onPress={() => handleToggleSelected(String(index))} 
-            />
+    function handleClearSelected() {
+        Alert.alert("Clear", "Want to clear everything!?", [
+            { text: "No", style: "cancel" },
+            { text: "Yes", onPress: () => setSelected([]) },
+        ])
+    }
 
-        ))}
-        </ScrollView>
+    return(
+        <>
+            <ScrollView 
+                showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.container}
+            >
+            
+            {Array.from({ length: 100 }).map
+            (( item, index ) => (
+                <Ingredient 
+                key={index} 
+                name="Maça"
+                image=""
+                selected={selected.includes(String(index))}
+                onPress={() => handleToggleSelected(String(index))} 
+                />
+
+            ))}
+            </ScrollView>       
+
+            <Selected 
+              quantity={selected.length} 
+              onClear={handleClearSelected} 
+              onSearch={() => {}}
+            />
+        </>        
     )
 }
